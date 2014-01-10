@@ -5,13 +5,65 @@
 
 import argparse, sys
 
-parser = argparse.ArgumentParser(description="Perform a variety of byte-level operations on files or byte sequences.")
-parser.add_argument("-b", "--byte", help="byte sequence to xor with input file")
-parser.add_argument("-B", "--bytes", help="xor provided byte sequences with one another")
-parser.add_argument("-i", "--info", help="display detailed information about file")
-parser.add_argument("-o", "--offset", help="extraction offset (default is file start)")
-parser.add_argument("-r", "--reverse", help="reverse an input file", action="store_true")
-parser.add_argument("-x", "--extract", help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset", type=int)
+# optool.py [file1] [file2]
+# -> xor file1 with file2
+# optool.py -b [bytes1] [file1]
+# -> xor bytes1 with file1
+# optool.py [file1] -b [bytes1]
+# -> xor file1 with bytes1
+# optool.py -B [bytes1] [bytes2]
+# -> xor bytes1 with bytes2
+# optool.py -r
+# -> reverse file per-byte
+# optool.py -i
+# -> detail file info
+# optool.py -o [offset] -x [length] 
+# -> extract chunk length x starting offset o
+
+parser = argparse.ArgumentParser(
+  description="Perform a variety of byte-level operations on files or byte sequences.",
+  prog="optool.py",
+  usage="optool.py [OPTIONS] [FILE1] [FILE2]"
+)
+parser.add_argument("-b", "--byte",
+  help="byte sequence to xor with input file",
+  nargs=1
+)
+parser.add_argument("-B", "--bytes",
+  help="xor provided byte sequences with one another",
+  nargs=2
+)
+parser.add_argument("-i", "--info",
+  help="display detailed information about file",
+  action="store_true",
+  default=False
+)
+parser.add_argument("-o", "--offset",
+  help="extraction offset (default is file start)",
+  default=0,
+  nargs='?',
+  type=int
+)
+parser.add_argument("-r", "--reverse",
+  help="reverse an input file",
+  action="store_true"
+)
+parser.add_argument("--version",
+  action='version',
+  version='optool.py v0.1a'
+)
+parser.add_argument("-x", "--extract",
+  help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset",
+  type=int
+)
+parser.add_argument("file1",
+  nargs='?',
+  type=argparse.FileType('r')
+)
+parser.add_argument("file2",
+  nargs='?',
+  type=argparse.FileType('r')
+)
 args = parser.parse_args()
 
 # todo:
@@ -34,8 +86,8 @@ def usage():
 print(len(sys.argv))
 
 #handle args
-if args.x:
-  extract_bytes = args.x
+#if args.x:
+#  extract_bytes = args.x
 
 #open files
 #with open(infileone, 'r') as inputone:
