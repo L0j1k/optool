@@ -27,10 +27,14 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("-b", "--byte",
   help="byte sequence to xor with input file",
+  default=False,
+  metavar='byte',
   nargs=1
 )
 parser.add_argument("-B", "--bytes",
   help="xor provided byte sequences with one another",
+  default=False,
+  metavar=('byte1', 'byte2'),
   nargs=2
 )
 parser.add_argument("-i", "--info",
@@ -39,8 +43,9 @@ parser.add_argument("-i", "--info",
   default=False
 )
 parser.add_argument("-o", "--offset",
-  help="extraction offset (default is file start)",
+  help="(int) extraction offset. default is file start",
   default=0,
+  metavar='offset',
   nargs='?',
   type=int
 )
@@ -54,13 +59,18 @@ parser.add_argument("--version",
 )
 parser.add_argument("-x", "--extract",
   help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset",
+  default=1,
+  metavar='length',
+  nargs='?',
   type=int
 )
 parser.add_argument("file1",
-  nargs='?',
+  help="primary input file",
+  nargs=1,
   type=argparse.FileType('r')
 )
 parser.add_argument("file2",
+  help="secondary input file",
   nargs='?',
   type=argparse.FileType('r')
 )
