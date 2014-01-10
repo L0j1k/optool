@@ -5,13 +5,13 @@
 
 import argparse, sys
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-b", help="byte sequence to xor with input file")
-parser.add_argument("-B", help="xor provided byte sequences with one another")
-parser.add_argument("-i", help="display detailed information about file")
-parser.add_argument("-o", help="extraction offset (default is file start)")
-parser.add_argument("-r", help="reverse an input file")
-parser.add_argument("-x", help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset", type=int)
+parser = argparse.ArgumentParser(description="Perform a variety of byte-level operations on files or byte sequences.")
+parser.add_argument("-b", "--byte", help="byte sequence to xor with input file")
+parser.add_argument("-B", "--bytes", help="xor provided byte sequences with one another")
+parser.add_argument("-i", "--info", help="display detailed information about file")
+parser.add_argument("-o", "--offset", help="extraction offset (default is file start)")
+parser.add_argument("-r", "--reverse", help="reverse an input file", action="store_true")
+parser.add_argument("-x", "--extract", help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset", type=int)
 args = parser.parse_args()
 
 # todo:
