@@ -8,11 +8,10 @@ import argparse, sys
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", help="byte sequence to xor with input file")
 parser.add_argument("-B", help="xor provided byte sequences with one another")
-parser.add_argument("-h", help="this help")
 parser.add_argument("-i", help="display detailed information about file")
 parser.add_argument("-o", help="extraction offset (default is file start)")
 parser.add_argument("-r", help="reverse an input file")
-parser.add_argument("-x", help="length of bytes to extract (implies -o, default is 1)")
+parser.add_argument("-x", help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset", type=int)
 args = parser.parse_args()
 
 # todo:
@@ -35,23 +34,25 @@ def usage():
 print(len(sys.argv))
 
 #handle args
+if args.x:
+  extract_bytes = args.x
 
 #open files
-with open(infileone, 'r') as inputone:
-  indataone = inputone.read()
+#with open(infileone, 'r') as inputone:
+#  indataone = inputone.read()
 
 #print status and impending operations
-if(xorfiles == True):
-  with open(infiletwo, 'r') as inputtwo:
-    indatatwo = inputtwo.read()
-    print("xor",infileone,"and",infiletwo,"...")
+#if(xorfiles == True):
+#  with open(infiletwo, 'r') as inputtwo:
+#    indatatwo = inputtwo.read()
+#    print("xor",infileone,"and",infiletwo,"...")
 
 #xor
-if(xorfiles == True):
-  for i in range(0, totallen):
-    byte1 = indataone[i:1]
-    byte2 = indatatwo[i:1]
-    outputdata = outputdata + (byte1 ^ byte2)
+#if(xorfiles == True):
+#  for i in range(0, totallen):
+#    byte1 = indataone[i:1]
+#    byte2 = indatatwo[i:1]
+#    outputdata = outputdata + (byte1 ^ byte2)
 
 #print status and summarize operations
 print("finished!")
