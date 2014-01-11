@@ -3,7 +3,7 @@
 #=-> optool.py -- perform a variety of byte-level operations on files or strings
 #=-> (C)2014 L0j1k@L0j1k.com
 
-import argparse, sys
+import argparse, os, sys
 
 # optool.py [file1] [file2]
 # -> xor file1 with file2
@@ -44,7 +44,7 @@ parser.add_argument("-i", "--info",
 )
 parser.add_argument("-o", "--offset",
   help="(int) extraction offset. default is file start (zero). requires -x",
-  default=0,
+  const=0,
   metavar='offset',
   nargs='?',
   type=int
@@ -65,7 +65,7 @@ parser.add_argument("-v", "--version",
 )
 parser.add_argument("-x", "--extract",
   help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset (same as extracting and then reversing the sequence)",
-  default=1,
+  const=1,
   metavar='length',
   nargs='?',
   type=int
@@ -86,7 +86,7 @@ args = parser.parse_args()
 # xor files
 # xor file with byteseq
 # xor two byteseqs
-# reverse file
+# reverse file -- DONE
 # info about file
 # extract from file
 # bytes to extract
@@ -108,14 +108,16 @@ print(len(sys.argv))
 ## handle args
 ##
 if(args.extract):
-  func_extract = True
+  opt_extract=args.extract
+  func_extract=True
 else:
-  func_extract = False
+  func_extract=False
 
 if(args.offset):
-  func_offset = True
+  opt_offset=args.offset
+  func_offset=True
 else:
-  func_offset = False
+  func_offset=False
 
 ## -r, --reverse
 if(args.reverse == True):
@@ -143,9 +145,20 @@ elif(opt_offset):
 if(func_extract == True):
   if(args.file2):
     usage()
-  if(os.path.isfile(args.file1)):
+  if(args.file1):
+    print("[+] starting extraction of",opt_length,"bytes from offset",opt_offset,"in",args.file1[0].name)
     filedata = args.file1[0].read()
-    outputdata = filedata[opt_offset:opt_offset+opt_length:1]
+    if(opt_length == 0):
+      print("[*] cannot extract 0 bytes!")
+      sys.exit(0)
+    elif(opt_length > 0):
+      #debug1
+      print("filedata[",opt_offset,":",opt_offset+opt_length,":1]")
+      outputdata = filedata[opt_offset:opt_offset+opt_length:1]
+    else:
+      #debug1
+      print("filedata[",opt_offset,":",opt_offset+opt_length,":-1]")
+      outputdata = filedata[opt_offset:opt_offset+opt_length:-1]
     print(outputdata)
 
 #open files
