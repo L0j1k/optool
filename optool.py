@@ -139,6 +139,14 @@ elif(opt_offset):
   opt_length=1
   func_extract=True
 
+## extraction process
+if(func_extract == True):
+  if(args.file2):
+    usage()
+  if(os.path.isfile(args.file1)):
+    filedata = args.file1[0].read()
+    outputdata = filedata[opt_offset:opt_offset+opt_length:1]
+    print(outputdata)
 
 #open files
 #with open(infileone, 'r') as inputone:
