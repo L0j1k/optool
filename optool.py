@@ -37,16 +37,20 @@ parser.add_argument("-B", "--bytes",
   metavar=('byte1', 'byte2'),
   nargs=2
 )
+parser.add_argument("-f", "--find",
+  help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc.",
+  metavar='filetype',
+  nargs=1
+)
 parser.add_argument("-i", "--info",
   help="display detailed information about file",
   action="store_true",
   default=False
 )
 parser.add_argument("-o", "--offset",
-  help="(int) extraction offset. default is file start (zero). requires -x",
-  const=0,
+  help="(int) extraction offset. use zero for file start. requires -x. negative values reference from EOF",
   metavar='offset',
-  nargs='?',
+  nargs=1,
   type=int
 )
 parser.add_argument("-r", "--reverse",
@@ -64,10 +68,9 @@ parser.add_argument("-v", "--version",
   version='optool.py v0.2a by L0j1k'
 )
 parser.add_argument("-x", "--extract",
-  help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset (same as extracting and then reversing the sequence)",
-  const=1,
+  help="(int) length of bytes to extract. requires -o. if negative, returns reverse output (same as extracting backwards from offset)",
   metavar='length',
-  nargs='?',
+  nargs=1,
   type=int
 )
 parser.add_argument("file1",
@@ -105,19 +108,14 @@ def usage():
 print(len(sys.argv))
 
 ##
+## required variables
+##
+func_extract=False
+func_offset=False
+
+##
 ## handle args
 ##
-if(args.extract):
-  opt_extract=args.extract
-  func_extract=True
-else:
-  func_extract=False
-
-if(args.offset):
-  opt_offset=args.offset
-  func_offset=True
-else:
-  func_offset=False
 
 ## -r, --reverse
 if(args.reverse == True):
@@ -128,36 +126,24 @@ if(args.reverse == True):
   sys.exit(0)
 ## -s, --swap
 ## -x, --extract
-if(opt_extract and opt_offset):
-  opt_offset=args.offset
+if(args.extract or args.offset):
   opt_length=args.extract
-  func_extract=True
-elif(opt_extract):
-  opt_offset=0
-  opt_length=args.extract
-  func_extract=True
-elif(opt_offset):
   opt_offset=args.offset
-  opt_length=1
-  func_extract=True
-
-## extraction process
-if(func_extract == True):
   if(args.file2):
     usage()
   if(args.file1):
-    print("[+] starting extraction of",opt_length,"bytes from offset",opt_offset,"in",args.file1[0].name)
+    print("[+] starting extraction of",str(opt_length),"bytes from offset",str(opt_offset),"in",args.file1[0].name)
     filedata = args.file1[0].read()
     if(opt_length == 0):
       print("[*] cannot extract 0 bytes!")
       sys.exit(0)
     elif(opt_length > 0):
       #debug1
-      print("filedata[",opt_offset,":",opt_offset+opt_length,":1]")
+      print("filedata[",str(opt_offset),":",str(opt_offset+opt_length),":1]")
       outputdata = filedata[opt_offset:opt_offset+opt_length:1]
     else:
       #debug1
-      print("filedata[",opt_offset,":",opt_offset+opt_length,":-1]")
+      print("filedata[",str(opt_offset),":",str(opt_offset+opt_length),":-1]")
       outputdata = filedata[opt_offset:opt_offset+opt_length:-1]
     print(outputdata)
 
