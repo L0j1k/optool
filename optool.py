@@ -126,6 +126,18 @@ if(args.reverse == True):
   sys.exit(0)
 ## -s, --swap
 ## -x, --extract
+if(opt_extract and opt_offset):
+  opt_offset=args.offset
+  opt_length=args.extract
+  func_extract=True
+elif(opt_extract):
+  opt_offset=0
+  opt_length=args.extract
+  func_extract=True
+elif(opt_offset):
+  opt_offset=args.offset
+  opt_length=1
+  func_extract=True
 
 
 #open files
