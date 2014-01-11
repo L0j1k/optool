@@ -43,22 +43,28 @@ parser.add_argument("-i", "--info",
   default=False
 )
 parser.add_argument("-o", "--offset",
-  help="(int) extraction offset. default is file start",
+  help="(int) extraction offset. default is file start (zero). requires -x",
   default=0,
   metavar='offset',
   nargs='?',
   type=int
 )
 parser.add_argument("-r", "--reverse",
-  help="reverse an input file",
+  help="reverse an input file.",
+  default=False,
   action="store_true"
 )
-parser.add_argument("--version",
+parser.add_argument("-s", "--swap",
+  help="swap byte order of input file.",
+  action="store_true",
+  default=False
+)
+parser.add_argument("-v", "--version",
   action='version',
-  version='optool.py v0.1a'
+  version='optool.py v0.2a by L0j1k'
 )
 parser.add_argument("-x", "--extract",
-  help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset",
+  help="(int) length of bytes to extract. implies -o. default is 1. if negative, returns reversed from offset (same as extracting and then reversing the sequence)",
   default=1,
   metavar='length',
   nargs='?',
@@ -92,12 +98,35 @@ def usage():
   print('usage: optool.py [OPTIONS] [file1] [file2]')
   sys.exit(0)
 
+def usage():
+  sys.exit(0)
+
 #debug
 print(len(sys.argv))
 
-#handle args
-#if args.x:
-#  extract_bytes = args.x
+##
+## handle args
+##
+if(args.extract):
+  func_extract = True
+else:
+  func_extract = False
+
+if(args.offset):
+  func_offset = True
+else:
+  func_offset = False
+
+## -r, --reverse
+if(args.reverse == True):
+  filedata = args.file1[0].read()
+  print("xor",filedata,"and",filedata,"...")
+  output_data = filedata[::-1]
+  print(output_data)
+  sys.exit(0)
+## -s, --swap
+## -x, --extract
+
 
 #open files
 #with open(infileone, 'r') as inputone:
