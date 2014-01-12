@@ -23,41 +23,71 @@ import argparse, os, sys
 parser = argparse.ArgumentParser(
   description="Perform a variety of byte-level operations on files or byte sequences.",
   prog="optool.py",
-  usage="optool.py [OPTIONS] [FILE1] [FILE2]"
+  usage="optool.py [SUBCOMMAND] TARGET1 [TARGET2]"
 )
-parser.add_argument("-b", "--byte",
+# normally here goes [OPTIONS] you want to feed to your command, but optool only uses subcommands
+subparsers = parsers.add_subparsers(help="sub-command help")
+# xor subparser
+parser_xor = subparsers.add_subparsers('xor',
+  help="xor provided targets with one another"
+)
+parser_xor.add_argument("file1",
+  help="primary input file",
+  nargs='?',
+  type=argparse.FileType('r')
+)
+parser_xor.add_argument("file2",
+  help="secondary input file",
+  nargs='?',
+  type=argparse.FileType('r')
+)
+parser_xor.add_argument("-b", "--byte",
   help="byte sequence to xor with input file. requires -x",
   default=False,
   metavar='byte',
   nargs=1
 )
-parser.add_argument("-B", "--bytes",
+parser_xor.add_argument("-B", "--bytes",
   help="xor provided byte sequences with one another. requires -x",
   default=False,
   metavar=('byte1', 'byte2'),
   nargs=2
 )
-parser.add_argument("-e", "--extract",
+# info subparser
+parser_info = subparsers.add_subparsers("info",
+  help="display detailed information about target and system"
+)
+parser_info.add_argument("file1",
+  help="primary target input file",
+  nargs=1,
+  type=argparse.FileType('r')
+)
+# extract subparser
+parser_extract = subparsers.add_subparsers("extract",
+  help="extract a segment of specified length from specified offset in target file"
+)
+parser_extract.add_argument("offset",
+  help="(int) extraction offset. use zero for file start. negative values reference from EOF",
+  metavar='offset',
+  nargs=1,
+  type=int
+)
+parser_extract.add_argument("length",
   help="(int) length of bytes to extract. requires -o. if negative, returns reverse output (same as extracting backwards from offset)",
   metavar='length',
   nargs=1,
   type=int
 )
+parser_extract.add_argument("file1",
+  help="primary target input file",
+  nargs=1,
+  type=argparse.FileType('r')
+)
+# find subparser
 parser.add_argument("-f", "--find",
   help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc.",
   metavar='filetype',
   nargs=1
-)
-parser.add_argument("-i", "--info",
-  help="display detailed information about file",
-  action="store_true",
-  default=False
-)
-parser.add_argument("-o", "--offset",
-  help="(int) extraction offset. use zero for file start. requires -e. negative values reference from EOF",
-  metavar='offset',
-  nargs=1,
-  type=int
 )
 parser.add_argument("-r", "--reverse",
   help="reverse an input file.",
@@ -78,16 +108,6 @@ parser.add_argument("-x", "--xor",
   action="store_true",
   default=False
 )
-parser.add_argument("file1",
-  help="primary input file",
-  nargs='?',
-  type=argparse.FileType('r')
-)
-parser.add_argument("file2",
-  help="secondary input file",
-  nargs='?',
-  type=argparse.FileType('r')
-)
 args = parser.parse_args()
 
 ## examples
@@ -101,7 +121,7 @@ args = parser.parse_args()
 # optools.py swap file1
 # optools.py reverse file1
 ## argparse subparsers:
-# subparser xor a b
+# subparser xor file1 file2 | -b byte1 file1 | file1 -b byte1 | -B byte1 byte2
 # subparser info
 # subparser extract length offset file1
 # subparser find
