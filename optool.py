@@ -26,16 +26,22 @@ parser = argparse.ArgumentParser(
   usage="optool.py [OPTIONS] [FILE1] [FILE2]"
 )
 parser.add_argument("-b", "--byte",
-  help="byte sequence to xor with input file",
+  help="byte sequence to xor with input file. requires -x",
   default=False,
   metavar='byte',
   nargs=1
 )
 parser.add_argument("-B", "--bytes",
-  help="xor provided byte sequences with one another",
+  help="xor provided byte sequences with one another. requires -x",
   default=False,
   metavar=('byte1', 'byte2'),
   nargs=2
+)
+parser.add_argument("-e", "--extract",
+  help="(int) length of bytes to extract. requires -o. if negative, returns reverse output (same as extracting backwards from offset)",
+  metavar='length',
+  nargs=1,
+  type=int
 )
 parser.add_argument("-f", "--find",
   help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc.",
@@ -48,7 +54,7 @@ parser.add_argument("-i", "--info",
   default=False
 )
 parser.add_argument("-o", "--offset",
-  help="(int) extraction offset. use zero for file start. requires -x. negative values reference from EOF",
+  help="(int) extraction offset. use zero for file start. requires -e. negative values reference from EOF",
   metavar='offset',
   nargs=1,
   type=int
@@ -59,7 +65,7 @@ parser.add_argument("-r", "--reverse",
   action="store_true"
 )
 parser.add_argument("-s", "--swap",
-  help="swap byte order of input file.",
+  help="swap byte order of input file (toggles big-/little-endian)",
   action="store_true",
   default=False
 )
@@ -67,15 +73,14 @@ parser.add_argument("-v", "--version",
   action='version',
   version='optool.py v0.2a by L0j1k'
 )
-parser.add_argument("-x", "--extract",
-  help="(int) length of bytes to extract. requires -o. if negative, returns reverse output (same as extracting backwards from offset)",
-  metavar='length',
-  nargs=1,
-  type=int
+parser.add_argument("-x", "--xor",
+  help="xor provided files and/or byte sequences",
+  action="store_true",
+  default=False
 )
 parser.add_argument("file1",
   help="primary input file",
-  nargs=1,
+  nargs='?',
   type=argparse.FileType('r')
 )
 parser.add_argument("file2",
@@ -84,6 +89,24 @@ parser.add_argument("file2",
   type=argparse.FileType('r')
 )
 args = parser.parse_args()
+
+## examples
+# optools.py xor file1 file2
+# optools.py xor -b 'ff' file1
+# optools.py xor file1 -b 'ff'
+# optools.py xor -B 'ff' 'a1'
+# optools.py info file1
+# optools.py extract 10 1 file1
+# optools.py find file1
+# optools.py swap file1
+# optools.py reverse file1
+## argparse subparsers:
+# subparser xor a b
+# subparser info
+# subparser extract length offset file1
+# subparser find
+# subparser swap
+# subparser reverse
 
 # todo:
 # xor files
@@ -117,6 +140,15 @@ func_offset=False
 ## handle args
 ##
 
+## -i, --info
+if(args.info == True):
+  filedata=args.file1[0].read()
+  print("<File information>")
+  print("[Name]:",args.file1[0].name)
+  print("[Size]:",len(filedata),"bytes")
+  print("--------------\n<System information>")
+  print("[Byteorder]:",sys.byteorder)
+  sys.exit(0)
 ## -r, --reverse
 if(args.reverse == True):
   filedata = args.file1[0].read()
