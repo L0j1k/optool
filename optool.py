@@ -23,8 +23,8 @@ import argparse, os, sys
 app_version = 'v0.3a'
 
 def extract(args):
-  opt_length=args.length[0]
-  opt_offset=args.offset[0]
+  opt_length = args.length[0]
+  opt_offset = args.offset[0]
   if(args.address):
     opt_offset = int("0x"+args.address, 0) + opt_offset
   if(args.file1):
@@ -39,7 +39,32 @@ def extract(args):
     sys.exit(0)
 
 def find(args):
-  print()
+  print("[+] find")
+
+## output to:
+#
+# 00000  0011 2233 4455 6677 8899 aabb ccdd eeff  ................
+# 00010  0011 2233 4455 6677 8899 aabb ccdd eeff  ................
+###
+##
+# -> fix this nub shit
+##
+###
+def hex(args):
+  #debug
+  print("[+] hex")
+  filedata = args.file1[0].read()
+  outputdata = ""
+  for i in range(0,len(filedata)):
+    nextchunk = str(filedata[i:i+16:1])
+    for j in range(0, len(nextchunk)):
+      this_address = "{=00002x}".format
+      this_byteline = ""
+      this_encoded = ""
+    print byte(nextbyte)
+    outputdata = outputdata + nextbyte
+  print(outputdata)
+  sys.exit(0)
 
 def info(args):
   filedata=args.file1[0].read()
@@ -50,16 +75,22 @@ def info(args):
   print("[byteorder]:",sys.byteorder)
   sys.exit(0)
 
+def main(args):
+  print("[+] main")
+  sys.exit(0)
+
 def reverse(args):
   filedata = args.file1[0].read()
   print(filedata[::-1])
   sys.exit(0)
 
 def swap(args):
-  print()
+  print("[+] swap")
+  sys.exit(0)
 
 def xor(args):
-  print()
+  print("[+] xor")
+  sys.exit(0)
 
 parser = argparse.ArgumentParser(
   description="Perform a variety of byte-level operations on files or byte sequences.",
@@ -71,6 +102,7 @@ parser.add_argument("--version",
   action='version',
   version='optool.py '+app_version+' by L0j1k'
 )
+#parser.set_defaults(func=main)
 subparsers = parser.add_subparsers(help="sub-command help")
 # extract subparser
 parser_extract = subparsers.add_parser("extract",
@@ -112,6 +144,16 @@ parser_find.add_argument("file1",
   type=argparse.FileType('r')
 )
 parser_find.set_defaults(func=find)
+# hex subparser
+parser_hex = subparsers.add_parser("hex",
+  help="output target file into hexadecimal-formatted output"
+)
+parser_hex.add_argument("file1",
+  help="primary target input file",
+  nargs=1,
+  type=argparse.FileType('r')
+)
+parser_hex.set_defaults(func=hex)
 # info subparser
 parser_info = subparsers.add_parser("info",
   help="display detailed information about target and system"
