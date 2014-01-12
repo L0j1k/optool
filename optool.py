@@ -53,17 +53,22 @@ def find(args):
 def hex(args):
   #debug
   print("[+] hex")
+  encoding = args.encoding
+  #debug
+  print("enc:[",args.encoding,"]")
   filedata = args.file1[0].read()
-  outputdata = ""
-  for i in range(0,len(filedata)):
-    nextchunk = str(filedata[i:i+16:1])
+  currentaddress = 0
+  for i in range(0,len(filedata[0::8])):
+    currentaddress += 8
+    nextchunk = str(filedata[i*8:i*8+8:1])
+    #debug
+    print("THISCHUNK:[",nextchunk,"]len[",len(filedata[0::8]),"]")
     for j in range(0, len(nextchunk)):
-      this_address = "{=00002x}".format
-      this_byteline = ""
-      this_encoded = ""
-    print byte(nextbyte)
-    outputdata = outputdata + nextbyte
-  print(outputdata)
+      block_addr = str("{}".format(nextchunk[j]))
+      block_byte = "{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}".format(nextchunk[j])
+      block_data = ""
+      outputline = block_addr + block_byte + block_data
+    print(outputline)
   sys.exit(0)
 
 def info(args):
@@ -147,6 +152,13 @@ parser_find.set_defaults(func=find)
 # hex subparser
 parser_hex = subparsers.add_parser("hex",
   help="output target file into hexadecimal-formatted output"
+)
+parser_hex.add_argument("-e", "--encoding",
+  help="encoding for hex output. possible values are 'utf-8', 'utf-16', 'latin', 'othershit'",
+  default='utf-8',
+  metavar='encoding',
+  nargs='?',
+  type=str
 )
 parser_hex.add_argument("file1",
   help="primary target input file",
