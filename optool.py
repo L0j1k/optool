@@ -20,17 +20,128 @@ import argparse, os, sys
 # optool.py -o [offset] -x [length] 
 # -> extract chunk length x starting offset o
 
+app_version = 'v0.3a'
+
+def extract(args):
+  opt_length=args.length[0]
+  opt_offset=args.offset[0]
+  if(args.address):
+    opt_offset = int("0x"+args.address, 0) + opt_offset
+  if(args.file1):
+    filedata = args.file1[0].read()
+    if(opt_length == 0):
+      outputdata = filedata[opt_offset:len(filedata):1]
+    elif(opt_length > 0):
+      outputdata = filedata[opt_offset:opt_offset+opt_length:1]
+    else:
+      outputdata = filedata[opt_offset:opt_offset+opt_length:-1]
+    sys.stdout.write(outputdata)
+    sys.exit(0)
+
+def find(args):
+  print()
+
+def info(args):
+  filedata=args.file1[0].read()
+  print("[+] file information")
+  print("[name]:",args.file1[0].name)
+  print("[size]:",len(filedata),"bytes")
+  print("\n[+] system information")
+  print("[byteorder]:",sys.byteorder)
+  sys.exit(0)
+
+def reverse(args):
+  filedata = args.file1[0].read()
+  print(filedata[::-1])
+  sys.exit(0)
+
+def swap(args):
+  print()
+
+def xor(args):
+  print()
+
 parser = argparse.ArgumentParser(
   description="Perform a variety of byte-level operations on files or byte sequences.",
   prog="optool.py",
   usage="optool.py"
 )
 # here goes [OPTIONS] you want to feed to your command
-parser.add_argument("-v", "--version",
+parser.add_argument("--version",
   action='version',
-  version='optool.py v0.2a by L0j1k'
+  version='optool.py '+app_version+' by L0j1k'
 )
 subparsers = parser.add_subparsers(help="sub-command help")
+# extract subparser
+parser_extract = subparsers.add_parser("extract",
+  help="extract a segment of specified length from specified offset in target file"
+)
+parser_extract.add_argument("-a", "--address",
+  help="(hex) base hexadecimal address for extraction",
+  const=0,
+  default=0,
+  metavar='hex_address',
+  nargs='?',
+  type=str
+)
+parser_extract.add_argument("offset",
+  help="(int) extraction offset. use zero for file start. negative values reference from EOF",
+  metavar='offset',
+  nargs=1,
+  type=int
+)
+parser_extract.add_argument("length",
+  help="(int) length of bytes to extract. 0 extracts data from offset to EOF. if negative, returns reverse output (extracts backwards from offset)",
+  metavar='length',
+  nargs=1,
+  type=int
+)
+parser_extract.add_argument("file1",
+  help="primary target input file",
+  nargs=1,
+  type=argparse.FileType('r')
+)
+parser_extract.set_defaults(func=extract)
+# find subparser
+parser_find = subparsers.add_parser("find",
+  help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc."
+)
+parser_find.add_argument("file1",
+  help="primary target input file",
+  nargs=1,
+  type=argparse.FileType('r')
+)
+parser_find.set_defaults(func=find)
+# info subparser
+parser_info = subparsers.add_parser("info",
+  help="display detailed information about target and system"
+)
+parser_info.add_argument("file1",
+  help="primary target input file",
+  nargs=1,
+  type=argparse.FileType('r')
+)
+parser_info.set_defaults(func=info)
+# reverse subparser
+parser_reverse = subparsers.add_parser("reverse",
+  help="reverse an input"
+)
+parser_reverse.add_argument("file1",
+  help="primary target input file",
+  nargs=1,
+  type=argparse.FileType('r')
+)
+parser_reverse.set_defaults(func=reverse)
+# swap subparser
+parser_swap = subparsers.add_parser("swap",
+  help="swap byte order of input (toggles big-/little-endian)"
+)
+parser_swap.add_argument("file1",
+  help="primary target input file",
+  nargs=1,
+  type=argparse.FileType('r')
+)
+parser_swap.set_defaults(func=swap)
 # xor subparser
 parser_xor = subparsers.add_parser('xor',
   help="xor provided targets with one another"
@@ -46,88 +157,31 @@ parser_xor.add_argument("file2",
   type=argparse.FileType('r')
 )
 parser_xor.add_argument("-b", "--byte",
-  help="byte sequence to xor with input file. requires -x",
+  help="byte sequence to xor with entire input file",
   default=False,
   metavar='byte',
-  nargs=1
+  nargs=1,
+  type=str
 )
 parser_xor.add_argument("-B", "--bytes",
-  help="xor provided byte sequences with one another. requires -x",
+  help="use provided byte sequences for xor operation instead",
   default=False,
   metavar=('byte1', 'byte2'),
-  nargs=2
+  nargs=2,
+  type=str
 )
-# info subparser
-parser_info = subparsers.add_parser("info",
-  help="display detailed information about target and system"
-)
-parser_info.add_argument("file1",
-  help="primary target input file",
-  nargs=1,
-  type=argparse.FileType('r')
-)
-# extract subparser
-parser_extract = subparsers.add_parser("extract",
-  help="extract a segment of specified length from specified offset in target file"
-)
-parser_extract.add_argument("offset",
-  help="(int) extraction offset. use zero for file start. negative values reference from EOF",
+parser_xor.add_argument("-o", "--offset",
+  help="xor beginning at provided offset in provided input",
   metavar='offset',
   nargs=1,
   type=int
 )
-parser_extract.add_argument("length",
-  help="(int) length of bytes to extract. if negative, returns reverse output (extracts backwards from offset)",
-  metavar='length',
-  nargs=1,
-  type=int
-)
-parser_extract.add_argument("file1",
-  help="primary target input file",
-  nargs=1,
-  type=argparse.FileType('r')
-)
-# find subparser
-parser_find = subparsers.add_parser("find",
-  help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc."
-)
-parser_find.add_argument("file1",
-  help="primary target input file",
-  nargs=1,
-  type=argparse.FileType('r')
-)
-# reverse subparser
-parser_reverse = subparsers.add_parser("reverse",
-  help="reverse an input"
-)
-parser_reverse.add_argument("file1",
-  help="primary target input file",
-  nargs=1,
-  type=argparse.FileType('r')
-)
-# swap subparser
-parser_swap = subparsers.add_parser("swap",
-  help="swap byte order of input (toggles big-/little-endian)"
-)
-parser_swap.add_argument("file1",
-  help="primary target input file",
-  nargs=1,
-  type=argparse.FileType('r')
-)
+parser_xor.set_defaults(func=xor)
 args = parser.parse_args()
+args.func(args)
 
-## examples
-# optools.py xor file1 file2
-# optools.py xor -b 'ff' file1
-# optools.py xor file1 -b 'ff'
-# optools.py xor -B 'ff' 'a1'
-# optools.py info file1
-# optools.py extract 10 1 file1
-# optools.py find file1
-# optools.py swap file1
-# optools.py reverse file1
 ## argparse subparsers:
-# subparser xor file1 file2 | -b byte1 file1 | file1 -b byte1 | -B byte1 byte2
+# subparser xor [-o offset] file1 file2 | -b byte1 file1 | file1 -b byte1 | -B byte1 byte2
 # subparser info
 # subparser extract length offset file1
 # subparser find
@@ -139,71 +193,17 @@ args = parser.parse_args()
 # xor file with byteseq
 # xor two byteseqs
 # reverse file -- DONE
-# info about file
-# extract from file
-# bytes to extract
-
-def usage():
-  print('optool.py -- perform a variety of byte-level operations')
-  print('(C)2014 -- written by L0j1k@L0j1k.com')
-  print('')
-  print('usage: optool.py [OPTIONS] [file1] [file2]')
-  sys.exit(0)
-
-def usage():
-  sys.exit(0)
-
-#debug
-print(len(sys.argv))
+# info about file -- DONE
+# extract from file -- DONE
+# swap file
 
 ##
 ## required variables
 ##
-func_extract=False
-func_offset=False
 
 ##
 ## handle args
 ##
-
-## -i, --info
-if(args.info == True):
-  filedata=args.file1[0].read()
-  print("<File information>")
-  print("[Name]:",args.file1[0].name)
-  print("[Size]:",len(filedata),"bytes")
-  print("--------------\n<System information>")
-  print("[Byteorder]:",sys.byteorder)
-  sys.exit(0)
-## -r, --reverse
-if(args.reverse == True):
-  filedata = args.file1[0].read()
-  print("xor",filedata,"and",filedata,"...")
-  output_data = filedata[::-1]
-  print(output_data)
-  sys.exit(0)
-## -s, --swap
-## -x, --extract
-if(args.extract or args.offset):
-  opt_length=args.extract
-  opt_offset=args.offset
-  if(args.file2):
-    usage()
-  if(args.file1):
-    print("[+] starting extraction of",str(opt_length),"bytes from offset",str(opt_offset),"in",args.file1[0].name)
-    filedata = args.file1[0].read()
-    if(opt_length == 0):
-      print("[*] cannot extract 0 bytes!")
-      sys.exit(0)
-    elif(opt_length > 0):
-      #debug1
-      print("filedata[",str(opt_offset),":",str(opt_offset+opt_length),":1]")
-      outputdata = filedata[opt_offset:opt_offset+opt_length:1]
-    else:
-      #debug1
-      print("filedata[",str(opt_offset),":",str(opt_offset+opt_length),":-1]")
-      outputdata = filedata[opt_offset:opt_offset+opt_length:-1]
-    print(outputdata)
 
 #open files
 #with open(infileone, 'r') as inputone:
@@ -221,6 +221,3 @@ if(args.extract or args.offset):
 #    byte1 = indataone[i:1]
 #    byte2 = indatatwo[i:1]
 #    outputdata = outputdata + (byte1 ^ byte2)
-
-#print status and summarize operations
-print("finished!")
