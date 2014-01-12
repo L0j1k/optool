@@ -50,7 +50,7 @@ def find(args):
 # -> fix this nub shit
 ##
 ###
-def hex(args):
+def hexdump(args):
   #debug
   print("[+] hex")
   encoding = args.encoding
@@ -60,14 +60,14 @@ def hex(args):
   currentaddress = 0
   for i in range(0,len(filedata[0::8])):
     currentaddress += 8
-    nextchunk = str(filedata[i*8:i*8+8:1])
+    thischunk = str(filedata[i*8:i*8+8:1])
     #debug
-    print("THISCHUNK:[",nextchunk,"]len[",len(filedata[0::8]),"]")
-    for j in range(0, len(nextchunk)):
-      block_addr = str("{}".format(nextchunk[j]))
-      block_byte = "{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}".format(nextchunk[j])
-      block_data = ""
-      outputline = block_addr + block_byte + block_data
+    print("THISCHUNK:[",thischunk,"]len[",len(filedata[0::8]),"]")
+    for thisbyte in thischunk:
+      block_byte = "{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}".format(thisbyte)
+    block_addr = str("{}".format(hex(currentaddress)))
+    block_data = ""
+    outputline = block_addr + block_byte + block_data
     print(outputline)
   sys.exit(0)
 
@@ -150,22 +150,22 @@ parser_find.add_argument("file1",
 )
 parser_find.set_defaults(func=find)
 # hex subparser
-parser_hex = subparsers.add_parser("hex",
+parser_hexdump = subparsers.add_parser("hexdump",
   help="output target file into hexadecimal-formatted output"
 )
-parser_hex.add_argument("-e", "--encoding",
-  help="encoding for hex output. possible values are 'utf-8', 'utf-16', 'latin', 'othershit'",
+parser_hexdump.add_argument("-e", "--encoding",
+  help="encoding for hexdump. possible values are 'utf-8', 'utf-16', 'latin', 'othershit'",
   default='utf-8',
   metavar='encoding',
   nargs='?',
   type=str
 )
-parser_hex.add_argument("file1",
+parser_hexdump.add_argument("file1",
   help="primary target input file",
   nargs=1,
   type=argparse.FileType('r')
 )
-parser_hex.set_defaults(func=hex)
+parser_hexdump.set_defaults(func=hexdump)
 # info subparser
 parser_info = subparsers.add_parser("info",
   help="display detailed information about target and system"
