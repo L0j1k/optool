@@ -20,9 +20,9 @@ import argparse, os, sys
 # optool.py -o [offset] -x [length] 
 # -> extract chunk length x starting offset o
 
-app_version = 'v0.3a'
+app_version = 'v0.5a'
 
-def extract(args):
+def func_extract(args):
   opt_length = args.length[0]
   opt_offset = args.offset[0]
   if(args.address):
@@ -38,7 +38,7 @@ def extract(args):
     sys.stdout.write(outputdata)
     sys.exit(0)
 
-def find(args):
+def func_find(args):
   print("[+] find")
 
 ## output to:
@@ -50,12 +50,20 @@ def find(args):
 # -> fix this nub shit
 ##
 ###
-def hexdump(args):
+def func_hexdump(args):
   #debug
   print("[+] hex")
   encoding = args.encoding
-  #debug
-  print("enc:[",args.encoding,"]")
+  elif(args.encoding == 'utf-8'):
+    print('utf-8')
+  elif(args.encoding == 'utf-16'):
+    print('utf-16')
+  elif(args.encoding == 'latin'):
+    print('latin')
+  elif(args.encoding == 'ebcdic'):
+    print('ebcdic')
+  else
+    usage()
   filedata = args.file1[0].read()
   currentaddress = 0
   for i in range(0,len(filedata[0::8])):
@@ -71,7 +79,7 @@ def hexdump(args):
     print(outputline)
   sys.exit(0)
 
-def info(args):
+def func_info(args):
   filedata=args.file1[0].read()
   print("[+] file information")
   print("[name]:",args.file1[0].name)
@@ -80,20 +88,36 @@ def info(args):
   print("[byteorder]:",sys.byteorder)
   sys.exit(0)
 
-def main(args):
+def func_main(args):
   print("[+] main")
   sys.exit(0)
 
-def reverse(args):
+def func_output(args):
+  print("[+] output")
+  elif(args.encoding == 'utf-8'):
+    print('utf-8')
+  elif(args.encoding == 'utf-16'):
+    print('utf-16')
+  elif(args.encoding == 'latin'):
+    print('latin')
+  elif(args.encoding == 'ebcdic'):
+    print('ebcdic')
+  else
+    usage()
+  byteseq = args.output1[0]
+  print()
+  sys.exit(0)
+
+def func_reverse(args):
   filedata = args.file1[0].read()
   print(filedata[::-1])
   sys.exit(0)
 
-def swap(args):
+def func_swap(args):
   print("[+] swap")
   sys.exit(0)
 
-def xor(args):
+def func_xor(args):
   print("[+] xor")
   sys.exit(0)
 
@@ -138,7 +162,7 @@ parser_extract.add_argument("file1",
   nargs=1,
   type=argparse.FileType('r')
 )
-parser_extract.set_defaults(func=extract)
+parser_extract.set_defaults(func=func_extract)
 # find subparser
 parser_find = subparsers.add_parser("find",
   help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc."
@@ -148,13 +172,13 @@ parser_find.add_argument("file1",
   nargs=1,
   type=argparse.FileType('r')
 )
-parser_find.set_defaults(func=find)
+parser_find.set_defaults(func=func_find)
 # hex subparser
 parser_hexdump = subparsers.add_parser("hexdump",
   help="output target file into hexadecimal-formatted output"
 )
 parser_hexdump.add_argument("-e", "--encoding",
-  help="encoding for hexdump. possible values are 'utf-8', 'utf-16', 'latin', 'othershit'",
+  help="encoding for hexdump output. possible values are 'utf-8', 'utf-16', 'latin', 'ebcdic'. default is 'utf-8'",
   default='utf-8',
   metavar='encoding',
   nargs='?',
@@ -165,7 +189,7 @@ parser_hexdump.add_argument("file1",
   nargs=1,
   type=argparse.FileType('r')
 )
-parser_hexdump.set_defaults(func=hexdump)
+parser_hexdump.set_defaults(func=func_hexdump)
 # info subparser
 parser_info = subparsers.add_parser("info",
   help="display detailed information about target and system"
@@ -175,7 +199,24 @@ parser_info.add_argument("file1",
   nargs=1,
   type=argparse.FileType('r')
 )
-parser_info.set_defaults(func=info)
+parser_info.set_defaults(func=func_info)
+# output subparser
+parser_output = subparsers.add_parser("output",
+  help="outputs specified byte sequence"
+)
+parser_output.add_argument("output1",
+  help="sequence to output",
+  nargs=1,
+  type=str
+)
+parser_output.add_argument("-e", "--encoding",
+  help="character encoding to use for decoding to bytes. valid options are 'utf-8', 'utf-16', 'latin1', 'ebcdic'. default is 'utf-8'",
+  default='utf-8',
+  metavar='encoding',
+  nargs='?',
+  type=str
+)
+parser_output.set_defaults(func=func_output)
 # reverse subparser
 parser_reverse = subparsers.add_parser("reverse",
   help="reverse an input"
@@ -185,7 +226,7 @@ parser_reverse.add_argument("file1",
   nargs=1,
   type=argparse.FileType('r')
 )
-parser_reverse.set_defaults(func=reverse)
+parser_reverse.set_defaults(func=func_reverse)
 # swap subparser
 parser_swap = subparsers.add_parser("swap",
   help="swap byte order of input (toggles big-/little-endian)"
@@ -195,7 +236,7 @@ parser_swap.add_argument("file1",
   nargs=1,
   type=argparse.FileType('r')
 )
-parser_swap.set_defaults(func=swap)
+parser_swap.set_defaults(func=func_swap)
 # xor subparser
 parser_xor = subparsers.add_parser('xor',
   help="xor provided targets with one another"
@@ -230,7 +271,7 @@ parser_xor.add_argument("-o", "--offset",
   nargs=1,
   type=int
 )
-parser_xor.set_defaults(func=xor)
+parser_xor.set_defaults(func=func_xor)
 args = parser.parse_args()
 args.func(args)
 
