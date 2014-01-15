@@ -54,7 +54,7 @@ def func_hexdump(args):
   #debug
   print("[+] hex")
   encoding = args.encoding
-  elif(args.encoding == 'utf-8'):
+  if(args.encoding == 'utf-8'):
     print('utf-8')
   elif(args.encoding == 'utf-16'):
     print('utf-16')
@@ -62,7 +62,7 @@ def func_hexdump(args):
     print('latin')
   elif(args.encoding == 'ebcdic'):
     print('ebcdic')
-  else
+  else:
     usage()
   filedata = args.file1[0].read()
   currentaddress = 0
@@ -94,7 +94,7 @@ def func_main(args):
 
 def func_output(args):
   print("[+] output")
-  elif(args.encoding == 'utf-8'):
+  if(args.encoding == 'utf-8'):
     print('utf-8')
   elif(args.encoding == 'utf-16'):
     print('utf-16')
@@ -102,7 +102,7 @@ def func_output(args):
     print('latin')
   elif(args.encoding == 'ebcdic'):
     print('ebcdic')
-  else
+  else:
     usage()
   byteseq = args.output1[0]
   print()
@@ -119,6 +119,10 @@ def func_swap(args):
 
 def func_xor(args):
   print("[+] xor")
+  sys.exit(0)
+
+def usage():
+  print("")
   sys.exit(0)
 
 parser = argparse.ArgumentParser(
@@ -152,7 +156,7 @@ parser_extract.add_argument("offset",
   type=int
 )
 parser_extract.add_argument("length",
-  help="(int) length of bytes to extract. 0 extracts data from offset to EOF. if negative, returns reverse output (extracts backwards from offset)",
+  help="(int) length of bytes to extract. 0 extracts data from offset to EOF. if negative, returns reversed output (extracts backwards from offset)",
   metavar='length',
   nargs=1,
   type=int
