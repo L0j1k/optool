@@ -84,15 +84,15 @@ def func_info(args):
   filedata=bytes(args.file1[0].read(), encoding)
   #debug
   print("BLAH[",filedata[0],"]")
-  minbyte = bytes(b'0x00', encoding)
-  maxbyte = bytes(b'0xff', encoding)
+  minbyte = 256
+  maxbyte = 0
   for iter in range(0, len(filedata)):
     thisbyte = filedata[iter]
     #debug
     print("enc:[",encoding,"]thisbyte:[",thisbyte,"]iter:[",iter,"]minbyte:[",minbyte,"]maxbyte:[",maxbyte,"]")
-    if(int(thisbyte, 16) > int(maxbyte, 16)):
+    if(thisbyte > maxbyte):
       maxbyte = thisbyte
-    elif(int(thisbyte, 16) < int(minbyte, 16)):
+    elif(thisbyte < minbyte):
       minbyte = thisbyte
   print("[+] file information")
   print("[name]:",args.file1[0].name)
