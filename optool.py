@@ -80,12 +80,16 @@ def func_hexdump(args):
   sys.exit(0)
 
 def func_info(args):
-  filedata=args.file1[0].read()
-  minbyte = b'ff'
-  maxbyte = b'00'
-  print("minbyte:[",int(minbyte, 16),"]maxbyte:[",int(maxbyte, 16),"]")
+  encoding = args.encoding
+  filedata=bytes(args.file1[0].read(), encoding)
+  #debug
+  print("BLAH[",filedata[0],"]")
+  minbyte = bytes(b'0x00', encoding)
+  maxbyte = bytes(b'0xff', encoding)
   for iter in range(0, len(filedata)):
     thisbyte = filedata[iter]
+    #debug
+    print("enc:[",encoding,"]thisbyte:[",thisbyte,"]iter:[",iter,"]minbyte:[",minbyte,"]maxbyte:[",maxbyte,"]")
     if(int(thisbyte, 16) > int(maxbyte, 16)):
       maxbyte = thisbyte
     elif(int(thisbyte, 16) < int(minbyte, 16)):
@@ -208,6 +212,13 @@ parser_hexdump.set_defaults(func=func_hexdump)
 # info subparser
 parser_info = subparsers.add_parser("info",
   help="display detailed information about target and system"
+)
+parser_info.add_argument("-e", "--encoding",
+  help="encoding to use for file. valid options are 'utf-8', 'utf-16', 'latin1', ebcdic'. default is 'utf-8'",
+  default='utf-8',
+  metavar='encoding',
+  nargs='?',
+  type=str
 )
 parser_info.add_argument("file1",
   help="primary target input file",
