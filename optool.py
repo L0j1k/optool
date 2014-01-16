@@ -81,12 +81,14 @@ def func_hexdump(args):
 
 def func_info(args):
   filedata=args.file1[0].read()
-  minbyte = b'f'
-  maxbyte = b'0'
-  for thisbyte in range(0, len(filedata)):
-    if(int(thisbyte) > int(maxbyte)):
+  minbyte = b'ff'
+  maxbyte = b'00'
+  print("minbyte:[",int(minbyte, 16),"]maxbyte:[",int(maxbyte, 16),"]")
+  for iter in range(0, len(filedata)):
+    thisbyte = filedata[iter]
+    if(int(thisbyte, 16) > int(maxbyte, 16)):
       maxbyte = thisbyte
-    elif(int(thisbyte) < int(minbyte)):
+    elif(int(thisbyte, 16) < int(minbyte, 16)):
       minbyte = thisbyte
   print("[+] file information")
   print("[name]:",args.file1[0].name)
