@@ -125,11 +125,30 @@ def func_swap(args):
   sys.exit(0)
 
 def func_xor(args):
-  print("[+] xor")
-
-  with file() as uno:
-    with file() as dos:
-      
+  if(args.offset1):
+    offset1 = args.offset1
+  else:
+    offset1 = 0
+  if(args.offset2):
+    offset2 = args.offset2
+  else:
+    offset2 = 0
+  if(args.length):
+    length = True
+  else:
+    length = False
+  args.file1.seek(offset1)
+  args.file2.seek(offset2)
+  thislength = 0
+  for thischar in args.file1.read():
+    thislength += 1
+    if(length):
+      if(thislength > args.length):
+        break
+    try:
+      sys.stdout.write(hex(ord(thischar) ^ ord(args.file2.read(1))))
+    except:
+      break
   sys.exit(0)
 
 def usage():
@@ -287,10 +306,24 @@ parser_xor.add_argument("-B", "--bytes",
   nargs=2,
   type=str
 )
-parser_xor.add_argument("-o", "--offset",
-  help="xor beginning at provided offset in provided input",
+parser_xor.add_argument("-l", "--length",
+  help="xor for specified length. default all",
+  metavar='length',
+  nargs='?',
+  type=int
+)
+parser_xor.add_argument("-o1", "--offset1",
+  help="xor beginning at provided offset in first input file. default 0",
+  default=0,
   metavar='offset',
-  nargs=1,
+  nargs='?',
+  type=int
+)
+parser_xor.add_argument("-o2", "--offset2",
+  help="xor beginning at provided offset in second input file. default 0",
+  default=0,
+  metavar='offset',
+  nargs='?',
   type=int
 )
 parser_xor.set_defaults(func=func_xor)
