@@ -126,6 +126,10 @@ def func_swap(args):
 
 def func_xor(args):
   print("[+] xor")
+
+  with file() as uno:
+    with file() as dos:
+      
   sys.exit(0)
 
 def usage():
