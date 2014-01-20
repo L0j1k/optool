@@ -125,6 +125,7 @@ def func_swap(args):
   sys.exit(0)
 
 def func_xor(args):
+  # todo: byte sequences
   if(args.offset1):
     offset1 = args.offset1
   else:
