@@ -26,4 +26,4 @@ print("[+] checking file",inputFile,"...")
 with open(inputFile, 'r') as input:
   for line in input:
     if(line.find() != 1):
-    print("[=]",line)
+      print("[=]",line)
