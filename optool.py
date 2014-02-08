@@ -348,14 +348,7 @@ args.func(args)
 # extract from file -- DONE
 # swap file
 
-##
-## required variables
-##
-
-##
-## handle args
-##
-
+############################################################3
 #open files
 #with open(infileone, 'r') as inputone:
 #  indataone = inputone.read()
