@@ -134,11 +134,6 @@ def func_info(args):
     return 0
 
 
-def func_main(args):
-    print("[+] main")
-    return 0
-
-
 @command("output")
 def func_output(args):
     """Outputs specified byte sequence.
