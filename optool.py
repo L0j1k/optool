@@ -117,7 +117,6 @@ def func_output(args):
         print('ebcdic')
     else:
         usage()
-    byteseq = args.output1[0]
     print()
     sys.exit(0)
 
