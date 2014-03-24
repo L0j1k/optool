@@ -60,7 +60,7 @@ def func_hexdump(args):
     if args.encoding in accepted_encodings:
         print(args.encoding)
     else:
-        usage()
+        return usage()
     filedata = args.file1.read()
     currentaddress = 0
     for i in range(0, len(filedata[0::8])):
@@ -105,7 +105,7 @@ def func_output(args):
     if args.encoding in accepted_encodings:
         print(args.encoding)
     else:
-        usage()
+        return usage()
     print()
     return 0
 
