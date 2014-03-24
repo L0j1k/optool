@@ -25,24 +25,24 @@ app_version = 'v0.5a'
 
 
 def func_extract(args):
-  opt_length = args.length[0]
-  opt_offset = args.offset[0]
-  if(args.address):
-    opt_offset = int("0x" + args.address, 0) + opt_offset
-  if(args.file1):
-    filedata = args.file1[0].read()
-    if(opt_length == 0):
-      outputdata = filedata[opt_offset:len(filedata):1]
-    elif(opt_length > 0):
-      outputdata = filedata[opt_offset:opt_offset + opt_length:1]
-    else:
-      outputdata = filedata[opt_offset:opt_offset + opt_length:-1]
-    sys.stdout.write(outputdata)
-    sys.exit(0)
+    opt_length = args.length[0]
+    opt_offset = args.offset[0]
+    if(args.address):
+        opt_offset = int("0x" + args.address, 0) + opt_offset
+    if(args.file1):
+        filedata = args.file1[0].read()
+        if(opt_length == 0):
+            outputdata = filedata[opt_offset:len(filedata):1]
+        elif(opt_length > 0):
+            outputdata = filedata[opt_offset:opt_offset + opt_length:1]
+        else:
+            outputdata = filedata[opt_offset:opt_offset + opt_length:-1]
+        sys.stdout.write(outputdata)
+        sys.exit(0)
 
 
 def func_find(args):
-  print("[+] find")
+    print("[+] find")
 
 
 ## output to:
@@ -55,168 +55,168 @@ def func_find(args):
 ##
 ###
 def func_hexdump(args):
-  #debug
-  print("[+] hex")
-  encoding = args.encoding
-  if(args.encoding == 'utf-8'):
-    print('utf-8')
-  elif(args.encoding == 'utf-16'):
-    print('utf-16')
-  elif(args.encoding == 'latin'):
-    print('latin')
-  elif(args.encoding == 'ebcdic'):
-    print('ebcdic')
-  else:
-    usage()
-  filedata = args.file1[0].read()
-  currentaddress = 0
-  for i in range(0, len(filedata[0::8])):
-    currentaddress += 8
-    thischunk = str(filedata[i*8:i*8+8:1])
     #debug
-    print("THISCHUNK:[", thischunk, "]len[", len(filedata[0::8]), "]")
-    for thisbyte in thischunk:
-      block_byte = "{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}".format(thisbyte)
-    block_addr = str("{}".format(hex(currentaddress)))
-    block_data = ""
-    outputline = block_addr + block_byte + block_data
-    print(outputline)
-  sys.exit(0)
+    print("[+] hex")
+    encoding = args.encoding
+    if(args.encoding == 'utf-8'):
+        print('utf-8')
+    elif(args.encoding == 'utf-16'):
+        print('utf-16')
+    elif(args.encoding == 'latin'):
+        print('latin')
+    elif(args.encoding == 'ebcdic'):
+        print('ebcdic')
+    else:
+        usage()
+    filedata = args.file1[0].read()
+    currentaddress = 0
+    for i in range(0, len(filedata[0::8])):
+        currentaddress += 8
+        thischunk = str(filedata[i*8:i*8+8:1])
+        #debug
+        print("THISCHUNK:[", thischunk, "]len[", len(filedata[0::8]), "]")
+        for thisbyte in thischunk:
+            block_byte = "{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}".format(thisbyte)
+        block_addr = str("{}".format(hex(currentaddress)))
+        block_data = ""
+        outputline = block_addr + block_byte + block_data
+        print(outputline)
+    sys.exit(0)
 
 
 def func_info(args):
-  encoding = args.encoding
-  filedata = args.file1[0].read()
-  #debug
-  print("BLAH[", filedata[0], "]")
-  minbyte = bytes(min(filedata), encoding)
-  maxbyte = bytes(max(filedata), encoding)
-  print("[+] file information")
-  print("[name]:", args.file1[0].name)
-  print("[size]:", len(filedata), "bytes")
-  print("[minbyte]:", minbyte)
-  print("[maxbyte]:", maxbyte)
-  print("\n[+] system information")
-  print("[byteorder]:", sys.byteorder)
-  sys.exit(0)
+    encoding = args.encoding
+    filedata = args.file1[0].read()
+    #debug
+    print("BLAH[", filedata[0], "]")
+    minbyte = bytes(min(filedata), encoding)
+    maxbyte = bytes(max(filedata), encoding)
+    print("[+] file information")
+    print("[name]:", args.file1[0].name)
+    print("[size]:", len(filedata), "bytes")
+    print("[minbyte]:", minbyte)
+    print("[maxbyte]:", maxbyte)
+    print("\n[+] system information")
+    print("[byteorder]:", sys.byteorder)
+    sys.exit(0)
 
 
 def func_main(args):
-  print("[+] main")
-  sys.exit(0)
+    print("[+] main")
+    sys.exit(0)
 
 
 def func_output(args):
-  print("[+] output")
-  if(args.encoding == 'utf-8'):
-    print('utf-8')
-  elif(args.encoding == 'utf-16'):
-    print('utf-16')
-  elif(args.encoding == 'latin'):
-    print('latin')
-  elif(args.encoding == 'ebcdic'):
-    print('ebcdic')
-  else:
-    usage()
-  byteseq = args.output1[0]
-  print()
-  sys.exit(0)
+    print("[+] output")
+    if(args.encoding == 'utf-8'):
+        print('utf-8')
+    elif(args.encoding == 'utf-16'):
+        print('utf-16')
+    elif(args.encoding == 'latin'):
+        print('latin')
+    elif(args.encoding == 'ebcdic'):
+        print('ebcdic')
+    else:
+        usage()
+    byteseq = args.output1[0]
+    print()
+    sys.exit(0)
 
 
 def func_reverse(args):
-  filedata = args.file1[0].read()
-  print(filedata[::-1])
-  sys.exit(0)
+    filedata = args.file1[0].read()
+    print(filedata[::-1])
+    sys.exit(0)
 
 
 def func_swap(args):
-  print("[+] swap")
-  sys.exit(0)
+    print("[+] swap")
+    sys.exit(0)
 
 
 def func_xor(args):
-  # todo: byte sequences
-  if(args.offset1):
-    offset1 = args.offset1
-  else:
-    offset1 = 0
-  if(args.offset2):
-    offset2 = args.offset2
-  else:
-    offset2 = 0
-  if(args.length):
-    length = True
-  else:
-    length = False
-  args.file1.seek(offset1)
-  args.file2.seek(offset2)
-  thislength = 0
-  for thischar in args.file1.read():
-    thislength += 1
-    if(length):
-      if(thislength > args.length):
-        break
-    try:
-      sys.stdout.write(hex(ord(thischar) ^ ord(args.file2.read(1))))
-    except:
-      break
-  sys.exit(0)
+    # todo: byte sequences
+    if(args.offset1):
+        offset1 = args.offset1
+    else:
+        offset1 = 0
+    if(args.offset2):
+        offset2 = args.offset2
+    else:
+        offset2 = 0
+    if(args.length):
+        length = True
+    else:
+        length = False
+    args.file1.seek(offset1)
+    args.file2.seek(offset2)
+    thislength = 0
+    for thischar in args.file1.read():
+        thislength += 1
+        if(length):
+            if(thislength > args.length):
+                break
+        try:
+            sys.stdout.write(hex(ord(thischar) ^ ord(args.file2.read(1))))
+        except:
+            break
+    sys.exit(0)
 
 
 def usage():
-  print("")
-  sys.exit(0)
+    print("")
+    sys.exit(0)
 
 parser = argparse.ArgumentParser(
-  description="Perform a variety of byte-level operations on files or byte sequences.",
-  prog="optool.py",
-  usage="optool.py"
+    description="Perform a variety of byte-level operations on files or byte sequences.",
+    prog="optool.py",
+    usage="optool.py"
 )
 # here goes [OPTIONS] you want to feed to your command
 parser.add_argument("--version",
-  action='version',
-  version='optool.py ' + app_version + ' by L0j1k'
+    action='version',
+    version='optool.py ' + app_version + ' by L0j1k'
 )
 #parser.set_defaults(func=main)
 subparsers = parser.add_subparsers(help="sub-command help")
 # extract subparser
 parser_extract = subparsers.add_parser("extract",
-  help="extract a segment of specified length from specified offset in target file"
+    help="extract a segment of specified length from specified offset in target file"
 )
 parser_extract.add_argument("-a", "--address",
-  help="(hex) base hexadecimal address for extraction",
-  const=0,
-  default=0,
-  metavar='hex_address',
-  nargs='?',
-  type=str
+    help="(hex) base hexadecimal address for extraction",
+    const=0,
+    default=0,
+    metavar='hex_address',
+    nargs='?',
+    type=str
 )
 parser_extract.add_argument("offset",
-  help="(int) extraction offset. use zero for file start. negative values reference from EOF",
-  metavar='offset',
-  nargs=1,
-  type=int
+    help="(int) extraction offset. use zero for file start. negative values reference from EOF",
+    metavar='offset',
+    nargs=1,
+    type=int
 )
 parser_extract.add_argument("length",
-  help="(int) length of bytes to extract. 0 extracts data from offset to EOF. if negative, returns reversed output (extracts backwards from offset)",
-  metavar='length',
-  nargs=1,
-  type=int
+    help="(int) length of bytes to extract. 0 extracts data from offset to EOF. if negative, returns reversed output (extracts backwards from offset)",
+    metavar='length',
+    nargs=1,
+    type=int
 )
 parser_extract.add_argument("file1",
-  help="primary target input file",
-  nargs=1,
-  type=argparse.FileType('r')
+    help="primary target input file",
+    nargs=1,
+    type=argparse.FileType('r')
 )
 parser_extract.set_defaults(func=func_extract)
 # find subparser
 parser_find = subparsers.add_parser("find",
-  help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc."
+    help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc."
 )
 parser_find.add_argument("file1",
-  help="primary target input file",
-  nargs=1,
-  type=argparse.FileType('r')
+    help="primary target input file",
+    nargs=1,
+    type=argparse.FileType('r')
 )
 parser_find.set_defaults(func=func_find)
 # hex subparser
