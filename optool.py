@@ -19,7 +19,6 @@ optool.py -o [offset] -x [length]
 """
 
 import argparse
-import os
 import sys
 
 app_version = 'v0.5a'
