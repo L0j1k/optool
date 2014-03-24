@@ -21,7 +21,7 @@ optool.py -o [offset] -x [length]
 import argparse
 import sys
 
-app_version = 'v0.5a'
+__version__ = 'v0.5a'
 
 
 def func_extract(args):
@@ -177,7 +177,7 @@ def make_parser():
     # here goes [OPTIONS] you want to feed to your command
     parser.add_argument("--version",
         action='version',
-        version='optool.py ' + app_version + ' by L0j1k'
+        version='optool.py ' + __version__ + ' by L0j1k'
     )
     #parser.set_defaults(func=main)
     subparsers = parser.add_subparsers(help="sub-command help")
