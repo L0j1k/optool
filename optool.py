@@ -36,11 +36,12 @@ def func_extract(args):
         else:
             outputdata = filedata[args.offset:args.offset + args.length:-1]
         sys.stdout.write(outputdata)
-        sys.exit(0)
+    return 0
 
 
 def func_find(args):
     print("[+] find")
+    return 0
 
 
 ## output to:
@@ -78,7 +79,7 @@ def func_hexdump(args):
         block_data = ""
         outputline = block_addr + block_byte + block_data
         print(outputline)
-    sys.exit(0)
+    return 0
 
 
 def func_info(args):
@@ -95,12 +96,12 @@ def func_info(args):
     print("[maxbyte]:", maxbyte)
     print("\n[+] system information")
     print("[byteorder]:", sys.byteorder)
-    sys.exit(0)
+    return 0
 
 
 def func_main(args):
     print("[+] main")
-    sys.exit(0)
+    return 0
 
 
 def func_output(args):
@@ -116,18 +117,18 @@ def func_output(args):
     else:
         usage()
     print()
-    sys.exit(0)
+    return 0
 
 
 def func_reverse(args):
     filedata = args.file1.read()
     print(filedata[::-1])
-    sys.exit(0)
+    return 0
 
 
 def func_swap(args):
     print("[+] swap")
-    sys.exit(0)
+    return 0
 
 
 def func_xor(args):
@@ -156,12 +157,12 @@ def func_xor(args):
             sys.stdout.write(hex(ord(thischar) ^ ord(args.file2.read(1))))
         except:
             break
-    sys.exit(0)
+    return 0
 
 
 def usage():
     print("")
-    sys.exit(0)
+    return 0
 
 
 def make_parser():
@@ -345,7 +346,8 @@ def main():
     """
     parser = make_parser()
     args = parser.parse_args()
-    args.func(args)
+    status = args.func(args)
+    sys.exit(status or 0)
 
 
 if __name__ == "__main__":
