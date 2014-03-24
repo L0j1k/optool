@@ -194,10 +194,9 @@ def func_xor(args):
         if length:
             if thislength > args.length:
                 break
-        try:
-            sys.stdout.write(hex(ord(thischar) ^ ord(args.file2.read(1))))
-        except:
-            break
+        otherchar = args.file2.read(1)
+        xored = hex(ord(thischar) ^ ord(otherchar))
+        sys.stdout.write(xored)
     return 0
 
 
