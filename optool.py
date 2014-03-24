@@ -25,10 +25,25 @@ __version__ = 'v0.5a'
 
 
 def command(name):
+    """Decorator to add metadata to a func_* declaration.
+    """
     def command_decorator(function):
+        """Actual decorator function returned by call to command().
+
+        Example:
+            @command("foo")
+            def func_foo(args):
+                ...
+
+            Here, command("foo") is called at module import time, returning
+            this inner function. Which is then called with func_foo as
+            the first and only argument. Because this inner function
+            returns the original function, the name 'func_foo' is bound
+            to the original function just as if @command("foo") had not
+            been put above its declaration.
+        """
         function.name = name
-        help = function.__doc__.strip().split("\n")[0]
-        function.help = help
+        function.help = function.__doc__.strip().split("\n")[0]
         return function
 
     return command_decorator
@@ -203,12 +218,15 @@ def make_parser():
     # parser.set_defaults(func=None)
     subparsers = parser.add_subparsers(help="sub-command help")
 
+    def add_subparser(func):
+        """Make a func_* subparser.
+        """
+        subparser = subparsers.add_parser(func.name, help=func.help)
+        subparser.set_defaults(func=func)
+        return subparser
+
     # extract subparser
-    parser_extract = subparsers.add_parser(
-        func_extract.name,
-        help=func_extract.help,
-    )
-    parser_extract.set_defaults(func=func_extract)
+    parser_extract = add_subparser(func_extract)
     parser_extract.add_argument("-a", "--address",
         help="(hex) base hexadecimal address for extraction",
         const=0,
@@ -233,22 +251,14 @@ def make_parser():
     )
 
     # find subparser
-    parser_find = subparsers.add_parser(
-        func_find.name,
-        help=func_find.help,
-    )
-    parser_find.set_defaults(func=func_find)
+    parser_find = add_subparser(func_find)
     parser_find.add_argument("file1",
         help="primary target input file",
         type=argparse.FileType('r')
     )
 
     # hex subparser
-    parser_hexdump = subparsers.add_parser(
-        func_hexdump.name,
-        help=func_hexdump.help
-    )
-    parser_hexdump.set_defaults(func=func_hexdump)
+    parser_hexdump = add_subparser(func_hexdump)
     parser_hexdump.add_argument("-e", "--encoding",
       help="encoding for hexdump output. possible values are 'utf-8', 'utf-16', 'latin', 'ebcdic'. default is 'utf-8'",
       default='utf-8',
@@ -262,11 +272,7 @@ def make_parser():
     )
 
     # info subparser
-    parser_info = subparsers.add_parser(
-        func_info.name,
-        help=func_info.help
-    )
-    parser_info.set_defaults(func=func_info)
+    parser_info = add_subparser(func_info)
     parser_info.add_argument("-e", "--encoding",
       help="encoding to use for file. valid options are 'utf-8', 'utf-16', 'latin1', ebcdic'. default is 'utf-8'",
       default='utf-8',
@@ -280,11 +286,7 @@ def make_parser():
     )
 
     # output subparser
-    parser_output = subparsers.add_parser(
-        func_output.name,
-        help=func_output.help
-    )
-    parser_output.set_defaults(func=func_output)
+    parser_output = add_subparser(func_output)
     parser_output.add_argument("output1",
       help="sequence to output",
       type=str
@@ -298,33 +300,21 @@ def make_parser():
     )
 
     # reverse subparser
-    parser_reverse = subparsers.add_parser(
-        func_reverse.name,
-        help=func_reverse.help
-    )
-    parser_reverse.set_defaults(func=func_reverse)
+    parser_reverse = add_subparser(func_reverse)
     parser_reverse.add_argument("file1",
       help="primary target input file",
       type=argparse.FileType('r')
     )
 
     # swap subparser
-    parser_swap = subparsers.add_parser(
-        func_swap.name,
-        help=func_swap.help,
-    )
-    parser_swap.set_defaults(func=func_swap)
+    parser_swap = add_subparser(func_swap)
     parser_swap.add_argument("file1",
       help="primary target input file",
       type=argparse.FileType('r')
     )
 
     # xor subparser
-    parser_xor = subparsers.add_parser(
-        func_xor.name,
-        help=func_xor.help
-    )
-    parser_xor.set_defaults(func=func_xor)
+    parser_xor = add_subparser(func_xor)
     parser_xor.add_argument("file1",
       help="primary input file",
       nargs='?',
