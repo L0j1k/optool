@@ -24,7 +24,20 @@ import sys
 __version__ = 'v0.5a'
 
 
+def command(name):
+    def command_decorator(function):
+        function.name = name
+        help = function.__doc__.strip().split("\n")[0]
+        function.help = help
+        return function
+
+    return command_decorator
+
+
+@command("extract")
 def func_extract(args):
+    """Extract a segment of specified length from specified offset in target file.
+    """
     if args.address:
         args.offset = int("0x" + args.address, 0) + args.offset
     if args.file1:
@@ -39,7 +52,10 @@ def func_extract(args):
     return 0
 
 
+@command("find")
 def func_find(args):
+    """Attempt to find separate files inside input file, such as JPG, GIF, PNG, etc.
+    """
     print("[+] find")
     return 0
 
@@ -53,7 +69,10 @@ def func_find(args):
 # -> fix this nub shit
 ##
 ###
+@command("hexdump")
 def func_hexdump(args):
+    """Output target file into hexadecimal-formatted output.
+    """
     #debug
     print("[+] hex")
     accepted_encodings = set(['utf-8', 'utf-16', 'latin', 'ebcdic'])
@@ -77,7 +96,10 @@ def func_hexdump(args):
     return 0
 
 
+@command("info")
 def func_info(args):
+    """Display detailed information about target and system.
+    """
     encoding = args.encoding
     filedata = args.file1.read()
     #debug
@@ -99,7 +121,10 @@ def func_main(args):
     return 0
 
 
+@command("output")
 def func_output(args):
+    """Outputs specified byte sequence.
+    """
     print("[+] output")
     accepted_encodings = set(['utf-8', 'utf-16', 'latin', 'ebcdic'])
     if args.encoding in accepted_encodings:
@@ -110,18 +135,27 @@ def func_output(args):
     return 0
 
 
+@command("reverse")
 def func_reverse(args):
+    """Reverse an input.
+    """
     filedata = args.file1.read()
     print(filedata[::-1])
     return 0
 
 
+@command("swap")
 def func_swap(args):
+    """Swap byte order of input (toggles big-/little-endian).
+    """
     print("[+] swap")
     return 0
 
 
+@command("xor")
 def func_xor(args):
+    """XOR provided targets with one another.
+    """
     # todo: byte sequences
     if args.offset1:
         offset1 = args.offset1
@@ -172,9 +206,11 @@ def make_parser():
     subparsers = parser.add_subparsers(help="sub-command help")
 
     # extract subparser
-    parser_extract = subparsers.add_parser("extract",
-        help="extract a segment of specified length from specified offset in target file"
+    parser_extract = subparsers.add_parser(
+        func_extract.name,
+        help=func_extract.help,
     )
+    parser_extract.set_defaults(func=func_extract)
     parser_extract.add_argument("-a", "--address",
         help="(hex) base hexadecimal address for extraction",
         const=0,
@@ -197,22 +233,24 @@ def make_parser():
         help="primary target input file",
         type=argparse.FileType('r')
     )
-    parser_extract.set_defaults(func=func_extract)
 
     # find subparser
-    parser_find = subparsers.add_parser("find",
-        help="attempts to find separate files inside input file, such as JPG, GIF, PNG, etc."
+    parser_find = subparsers.add_parser(
+        func_find.name,
+        help=func_find.help,
     )
+    parser_find.set_defaults(func=func_find)
     parser_find.add_argument("file1",
         help="primary target input file",
         type=argparse.FileType('r')
     )
-    parser_find.set_defaults(func=func_find)
 
     # hex subparser
-    parser_hexdump = subparsers.add_parser("hexdump",
-      help="output target file into hexadecimal-formatted output"
+    parser_hexdump = subparsers.add_parser(
+        func_hexdump.name,
+        help=func_hexdump.help
     )
+    parser_hexdump.set_defaults(func=func_hexdump)
     parser_hexdump.add_argument("-e", "--encoding",
       help="encoding for hexdump output. possible values are 'utf-8', 'utf-16', 'latin', 'ebcdic'. default is 'utf-8'",
       default='utf-8',
@@ -224,12 +262,13 @@ def make_parser():
       help="primary target input file",
       type=argparse.FileType('r')
     )
-    parser_hexdump.set_defaults(func=func_hexdump)
 
     # info subparser
-    parser_info = subparsers.add_parser("info",
-      help="display detailed information about target and system"
+    parser_info = subparsers.add_parser(
+        func_info.name,
+        help=func_info.help
     )
+    parser_info.set_defaults(func=func_info)
     parser_info.add_argument("-e", "--encoding",
       help="encoding to use for file. valid options are 'utf-8', 'utf-16', 'latin1', ebcdic'. default is 'utf-8'",
       default='utf-8',
@@ -241,12 +280,13 @@ def make_parser():
       help="primary target input file",
       type=argparse.FileType('r')
     )
-    parser_info.set_defaults(func=func_info)
 
     # output subparser
-    parser_output = subparsers.add_parser("output",
-      help="outputs specified byte sequence"
+    parser_output = subparsers.add_parser(
+        func_output.name,
+        help=func_output.help
     )
+    parser_output.set_defaults(func=func_output)
     parser_output.add_argument("output1",
       help="sequence to output",
       type=str
@@ -258,32 +298,35 @@ def make_parser():
       nargs='?',
       type=str
     )
-    parser_output.set_defaults(func=func_output)
 
     # reverse subparser
-    parser_reverse = subparsers.add_parser("reverse",
-      help="reverse an input"
+    parser_reverse = subparsers.add_parser(
+        func_reverse.name,
+        help=func_reverse.help
     )
+    parser_reverse.set_defaults(func=func_reverse)
     parser_reverse.add_argument("file1",
       help="primary target input file",
       type=argparse.FileType('r')
     )
-    parser_reverse.set_defaults(func=func_reverse)
 
     # swap subparser
-    parser_swap = subparsers.add_parser("swap",
-      help="swap byte order of input (toggles big-/little-endian)"
+    parser_swap = subparsers.add_parser(
+        func_swap.name,
+        help=func_swap.help,
     )
+    parser_swap.set_defaults(func=func_swap)
     parser_swap.add_argument("file1",
       help="primary target input file",
       type=argparse.FileType('r')
     )
-    parser_swap.set_defaults(func=func_swap)
 
     # xor subparser
-    parser_xor = subparsers.add_parser('xor',
-      help="xor provided targets with one another"
+    parser_xor = subparsers.add_parser(
+        func_xor.name,
+        help=func_xor.help
     )
+    parser_xor.set_defaults(func=func_xor)
     parser_xor.add_argument("file1",
       help="primary input file",
       nargs='?',
@@ -327,7 +370,7 @@ def make_parser():
       nargs='?',
       type=int
     )
-    parser_xor.set_defaults(func=func_xor)
+
     return parser
 
 
