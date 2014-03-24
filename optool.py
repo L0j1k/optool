@@ -56,14 +56,9 @@ def func_find(args):
 def func_hexdump(args):
     #debug
     print("[+] hex")
-    if args.encoding == 'utf-8':
-        print('utf-8')
-    elif args.encoding == 'utf-16':
-        print('utf-16')
-    elif args.encoding == 'latin':
-        print('latin')
-    elif args.encoding == 'ebcdic':
-        print('ebcdic')
+    accepted_encodings = set(['utf-8', 'utf-16', 'latin', 'ebcdic'])
+    if args.encoding in accepted_encodings:
+        print(args.encoding)
     else:
         usage()
     filedata = args.file1.read()
@@ -106,14 +101,9 @@ def func_main(args):
 
 def func_output(args):
     print("[+] output")
-    if args.encoding == 'utf-8':
-        print('utf-8')
-    elif args.encoding == 'utf-16':
-        print('utf-16')
-    elif args.encoding == 'latin':
-        print('latin')
-    elif args.encoding == 'ebcdic':
-        print('ebcdic')
+    accepted_encodings = set(['utf-8', 'utf-16', 'latin', 'ebcdic'])
+    if args.encoding in accepted_encodings:
+        print(args.encoding)
     else:
         usage()
     print()
