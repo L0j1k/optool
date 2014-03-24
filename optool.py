@@ -200,7 +200,7 @@ def make_parser():
         action='version',
         version='optool.py ' + __version__ + ' by L0j1k'
     )
-    #parser.set_defaults(func=main)
+    # parser.set_defaults(func=None)
     subparsers = parser.add_subparsers(help="sub-command help")
 
     # extract subparser
@@ -377,7 +377,11 @@ def main():
     """
     parser = make_parser()
     args = parser.parse_args()
-    status = args.func(args)
+    if 'func' not in args:
+        parser.print_help()
+        status = 1
+    else:
+        status = args.func(args)
     sys.exit(status or 0)
 
 
