@@ -25,13 +25,13 @@ __version__ = 'v0.5a'
 
 
 def func_extract(args):
-    if(args.address):
+    if args.address:
         args.offset = int("0x" + args.address, 0) + args.offset
-    if(args.file1):
+    if args.file1:
         filedata = args.file1.read()
-        if(args.length == 0):
+        if args.length == 0:
             outputdata = filedata[args.offset:len(filedata):1]
-        elif(args.length > 0):
+        elif args.length > 0:
             outputdata = filedata[args.offset:args.offset + args.length:1]
         else:
             outputdata = filedata[args.offset:args.offset + args.length:-1]
@@ -55,13 +55,13 @@ def func_find(args):
 def func_hexdump(args):
     #debug
     print("[+] hex")
-    if(args.encoding == 'utf-8'):
+    if args.encoding == 'utf-8':
         print('utf-8')
-    elif(args.encoding == 'utf-16'):
+    elif args.encoding == 'utf-16':
         print('utf-16')
-    elif(args.encoding == 'latin'):
+    elif args.encoding == 'latin':
         print('latin')
-    elif(args.encoding == 'ebcdic'):
+    elif args.encoding == 'ebcdic':
         print('ebcdic')
     else:
         usage()
@@ -105,13 +105,13 @@ def func_main(args):
 
 def func_output(args):
     print("[+] output")
-    if(args.encoding == 'utf-8'):
+    if args.encoding == 'utf-8':
         print('utf-8')
-    elif(args.encoding == 'utf-16'):
+    elif args.encoding == 'utf-16':
         print('utf-16')
-    elif(args.encoding == 'latin'):
+    elif args.encoding == 'latin':
         print('latin')
-    elif(args.encoding == 'ebcdic'):
+    elif args.encoding == 'ebcdic':
         print('ebcdic')
     else:
         usage()
@@ -132,15 +132,15 @@ def func_swap(args):
 
 def func_xor(args):
     # todo: byte sequences
-    if(args.offset1):
+    if args.offset1:
         offset1 = args.offset1
     else:
         offset1 = 0
-    if(args.offset2):
+    if args.offset2:
         offset2 = args.offset2
     else:
         offset2 = 0
-    if(args.length):
+    if args.length:
         length = True
     else:
         length = False
@@ -149,8 +149,8 @@ def func_xor(args):
     thislength = 0
     for thischar in args.file1.read():
         thislength += 1
-        if(length):
-            if(thislength > args.length):
+        if length:
+            if thislength > args.length:
                 break
         try:
             sys.stdout.write(hex(ord(thischar) ^ ord(args.file2.read(1))))
@@ -374,13 +374,13 @@ if __name__ == "__main__":
 #  indataone = inputone.read()
 
 #print status and impending operations
-#if(xorfiles == True):
+#if xorfiles == True:
 #  with open(infiletwo, 'r') as inputtwo:
 #    indatatwo = inputtwo.read()
 #    print("xor",infileone,"and",infiletwo,"...")
 
 #xor
-#if(xorfiles == True):
+#if xorfiles == True:
 #  for i in range(0, totallen):
 #    byte1 = indataone[i:1]
 #    byte2 = indatatwo[i:1]
