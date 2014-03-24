@@ -194,8 +194,6 @@ def make_parser():
     """
     parser = argparse.ArgumentParser(
         description="Perform a variety of byte-level operations on files or byte sequences.",
-        prog="optool.py",
-        usage="optool.py"
     )
     # here goes [OPTIONS] you want to feed to your command
     parser.add_argument("--version",
