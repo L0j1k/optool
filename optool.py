@@ -1,26 +1,27 @@
 #!/usr/bin/python3
+# (C)2014 L0j1k@L0j1k.com
+"""Perform a variety of byte-level operations on files or strings.
 
-#=-> optool.py -- perform a variety of byte-level operations on files or strings
-#=-> (C)2014 L0j1k@L0j1k.com
+optool.py [file1] [file2]
+-> xor file1 with file2
+optool.py -b [bytes1] [file1]
+-> xor bytes1 with file1
+optool.py [file1] -b [bytes1]
+-> xor file1 with bytes1
+optool.py -B [bytes1] [bytes2]
+-> xor bytes1 with bytes2
+optool.py -r
+-> reverse file per-byte
+optool.py -i
+-> detail file info
+optool.py -o [offset] -x [length]
+-> extract chunk length x starting offset o
+"""
 
 import argparse, os, sys
 
-# optool.py [file1] [file2]
-# -> xor file1 with file2
-# optool.py -b [bytes1] [file1]
-# -> xor bytes1 with file1
-# optool.py [file1] -b [bytes1]
-# -> xor file1 with bytes1
-# optool.py -B [bytes1] [bytes2]
-# -> xor bytes1 with bytes2
-# optool.py -r
-# -> reverse file per-byte
-# optool.py -i
-# -> detail file info
-# optool.py -o [offset] -x [length] 
-# -> extract chunk length x starting offset o
-
 app_version = 'v0.5a'
+
 
 def func_extract(args):
   opt_length = args.length[0]
