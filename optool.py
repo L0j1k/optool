@@ -23,6 +23,10 @@ import sys
 
 __version__ = 'v0.5a'
 
+DEFAULT_ENCODING = 'utf-8'
+ACCEPTED_ENCODINGS = ['utf-8', 'utf-16', 'latin', 'ebcdic']
+assert DEFAULT_ENCODING in ACCEPTED_ENCODINGS
+
 
 def command(name):
     """Decorator to add metadata to a func_* declaration.
@@ -90,8 +94,7 @@ def func_hexdump(args):
     """
     #debug
     print("[+] hex")
-    accepted_encodings = set(['utf-8', 'utf-16', 'latin', 'ebcdic'])
-    if args.encoding in accepted_encodings:
+    if args.encoding in ACCEPTED_ENCODINGS:
         print(args.encoding)
     else:
         return usage()
@@ -141,8 +144,7 @@ def func_output(args):
     """Outputs specified byte sequence.
     """
     print("[+] output")
-    accepted_encodings = set(['utf-8', 'utf-16', 'latin', 'ebcdic'])
-    if args.encoding in accepted_encodings:
+    if args.encoding in ACCEPTED_ENCODINGS:
         print(args.encoding)
     else:
         return usage()
@@ -225,6 +227,14 @@ def make_parser():
         subparser.set_defaults(func=func)
         return subparser
 
+    encodings_message = (
+       "valid options are {0}. "
+       "default is {1}.".format(
+            ', '.join(repr(encoding) for encoding in ACCEPTED_ENCODINGS),
+            repr(DEFAULT_ENCODING)
+       )
+    )
+
     # extract subparser
     parser_extract = add_subparser(func_extract)
     parser_extract.add_argument("-a", "--address",
@@ -260,12 +270,13 @@ def make_parser():
     # hex subparser
     parser_hexdump = add_subparser(func_hexdump)
     parser_hexdump.add_argument("-e", "--encoding",
-      help="encoding for hexdump output. possible values are 'utf-8', 'utf-16', 'latin', 'ebcdic'. default is 'utf-8'",
-      default='utf-8',
+      help="encoding for hexdump output. " + encodings_message,
+      default=DEFAULT_ENCODING,
       metavar='encoding',
       nargs='?',
       type=str
     )
+
     parser_hexdump.add_argument("file1",
       help="primary target input file",
       type=argparse.FileType('r')
@@ -274,8 +285,8 @@ def make_parser():
     # info subparser
     parser_info = add_subparser(func_info)
     parser_info.add_argument("-e", "--encoding",
-      help="encoding to use for file. valid options are 'utf-8', 'utf-16', 'latin1', ebcdic'. default is 'utf-8'",
-      default='utf-8',
+      help="encoding to use for file. " + encodings_message,
+      default=DEFAULT_ENCODING,
       metavar='encoding',
       nargs='?',
       type=str
@@ -292,8 +303,8 @@ def make_parser():
       type=str
     )
     parser_output.add_argument("-e", "--encoding",
-      help="character encoding to use for decoding to bytes. valid options are 'utf-8', 'utf-16', 'latin1', 'ebcdic'. default is 'utf-8'",
-      default='utf-8',
+      help="character encoding to use for decoding to bytes. " + encodings_message,
+      default=DEFAULT_ENCODING,
       metavar='encoding',
       nargs='?',
       type=str
