@@ -18,7 +18,9 @@ optool.py -o [offset] -x [length]
 -> extract chunk length x starting offset o
 """
 
-import argparse, os, sys
+import argparse
+import os
+import sys
 
 app_version = 'v0.5a'
 
