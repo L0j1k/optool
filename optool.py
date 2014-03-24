@@ -40,8 +40,10 @@ def func_extract(args):
     sys.stdout.write(outputdata)
     sys.exit(0)
 
+
 def func_find(args):
   print("[+] find")
+
 
 ## output to:
 #
@@ -81,6 +83,7 @@ def func_hexdump(args):
     print(outputline)
   sys.exit(0)
 
+
 def func_info(args):
   encoding = args.encoding
   filedata=args.file1[0].read()
@@ -97,9 +100,11 @@ def func_info(args):
   print("[byteorder]:",sys.byteorder)
   sys.exit(0)
 
+
 def func_main(args):
   print("[+] main")
   sys.exit(0)
+
 
 def func_output(args):
   print("[+] output")
@@ -117,14 +122,17 @@ def func_output(args):
   print()
   sys.exit(0)
 
+
 def func_reverse(args):
   filedata = args.file1[0].read()
   print(filedata[::-1])
   sys.exit(0)
 
+
 def func_swap(args):
   print("[+] swap")
   sys.exit(0)
+
 
 def func_xor(args):
   # todo: byte sequences
@@ -153,6 +161,7 @@ def func_xor(args):
     except:
       break
   sys.exit(0)
+
 
 def usage():
   print("")
