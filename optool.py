@@ -57,7 +57,6 @@ def func_find(args):
 def func_hexdump(args):
     #debug
     print("[+] hex")
-    encoding = args.encoding
     if(args.encoding == 'utf-8'):
         print('utf-8')
     elif(args.encoding == 'utf-16'):
