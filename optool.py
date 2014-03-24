@@ -28,15 +28,15 @@ def func_extract(args):
   opt_length = args.length[0]
   opt_offset = args.offset[0]
   if(args.address):
-    opt_offset = int("0x"+args.address, 0) + opt_offset
+    opt_offset = int("0x" + args.address, 0) + opt_offset
   if(args.file1):
     filedata = args.file1[0].read()
     if(opt_length == 0):
       outputdata = filedata[opt_offset:len(filedata):1]
     elif(opt_length > 0):
-      outputdata = filedata[opt_offset:opt_offset+opt_length:1]
+      outputdata = filedata[opt_offset:opt_offset + opt_length:1]
     else:
-      outputdata = filedata[opt_offset:opt_offset+opt_length:-1]
+      outputdata = filedata[opt_offset:opt_offset + opt_length:-1]
     sys.stdout.write(outputdata)
     sys.exit(0)
 
@@ -70,11 +70,11 @@ def func_hexdump(args):
     usage()
   filedata = args.file1[0].read()
   currentaddress = 0
-  for i in range(0,len(filedata[0::8])):
+  for i in range(0, len(filedata[0::8])):
     currentaddress += 8
     thischunk = str(filedata[i*8:i*8+8:1])
     #debug
-    print("THISCHUNK:[",thischunk,"]len[",len(filedata[0::8]),"]")
+    print("THISCHUNK:[", thischunk, "]len[", len(filedata[0::8]), "]")
     for thisbyte in thischunk:
       block_byte = "{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}".format(thisbyte)
     block_addr = str("{}".format(hex(currentaddress)))
@@ -86,18 +86,18 @@ def func_hexdump(args):
 
 def func_info(args):
   encoding = args.encoding
-  filedata=args.file1[0].read()
+  filedata = args.file1[0].read()
   #debug
-  print("BLAH[",filedata[0],"]")
+  print("BLAH[", filedata[0], "]")
   minbyte = bytes(min(filedata), encoding)
   maxbyte = bytes(max(filedata), encoding)
   print("[+] file information")
-  print("[name]:",args.file1[0].name)
-  print("[size]:",len(filedata),"bytes")
-  print("[minbyte]:",minbyte)
-  print("[maxbyte]:",maxbyte)
+  print("[name]:", args.file1[0].name)
+  print("[size]:", len(filedata), "bytes")
+  print("[minbyte]:", minbyte)
+  print("[maxbyte]:", maxbyte)
   print("\n[+] system information")
-  print("[byteorder]:",sys.byteorder)
+  print("[byteorder]:", sys.byteorder)
   sys.exit(0)
 
 
@@ -175,7 +175,7 @@ parser = argparse.ArgumentParser(
 # here goes [OPTIONS] you want to feed to your command
 parser.add_argument("--version",
   action='version',
-  version='optool.py '+app_version+' by L0j1k'
+  version='optool.py ' + app_version + ' by L0j1k'
 )
 #parser.set_defaults(func=main)
 subparsers = parser.add_subparsers(help="sub-command help")
