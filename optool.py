@@ -374,13 +374,13 @@ if __name__ == "__main__":
 #  indataone = inputone.read()
 
 #print status and impending operations
-#if xorfiles == True:
+#if xorfiles:
 #  with open(infiletwo, 'r') as inputtwo:
 #    indatatwo = inputtwo.read()
 #    print("xor",infileone,"and",infiletwo,"...")
 
 #xor
-#if xorfiles == True:
+#if xorfiles:
 #  for i in range(0, totallen):
 #    byte1 = indataone[i:1]
 #    byte2 = indatatwo[i:1]
