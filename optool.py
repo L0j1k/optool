@@ -25,18 +25,16 @@ __version__ = 'v0.5a'
 
 
 def func_extract(args):
-    opt_length = args.length[0]
-    opt_offset = args.offset[0]
     if(args.address):
-        opt_offset = int("0x" + args.address, 0) + opt_offset
+        args.offset = int("0x" + args.address, 0) + args.offset
     if(args.file1):
-        filedata = args.file1[0].read()
-        if(opt_length == 0):
-            outputdata = filedata[opt_offset:len(filedata):1]
-        elif(opt_length > 0):
-            outputdata = filedata[opt_offset:opt_offset + opt_length:1]
+        filedata = args.file1.read()
+        if(args.length == 0):
+            outputdata = filedata[args.offset:len(filedata):1]
+        elif(args.length > 0):
+            outputdata = filedata[args.offset:args.offset + args.length:1]
         else:
-            outputdata = filedata[opt_offset:opt_offset + opt_length:-1]
+            outputdata = filedata[args.offset:args.offset + args.length:-1]
         sys.stdout.write(outputdata)
         sys.exit(0)
 
@@ -67,7 +65,7 @@ def func_hexdump(args):
         print('ebcdic')
     else:
         usage()
-    filedata = args.file1[0].read()
+    filedata = args.file1.read()
     currentaddress = 0
     for i in range(0, len(filedata[0::8])):
         currentaddress += 8
@@ -85,13 +83,13 @@ def func_hexdump(args):
 
 def func_info(args):
     encoding = args.encoding
-    filedata = args.file1[0].read()
+    filedata = args.file1.read()
     #debug
     print("BLAH[", filedata[0], "]")
     minbyte = bytes(min(filedata), encoding)
     maxbyte = bytes(max(filedata), encoding)
     print("[+] file information")
-    print("[name]:", args.file1[0].name)
+    print("[name]:", args.file1.name)
     print("[size]:", len(filedata), "bytes")
     print("[minbyte]:", minbyte)
     print("[maxbyte]:", maxbyte)
@@ -122,7 +120,7 @@ def func_output(args):
 
 
 def func_reverse(args):
-    filedata = args.file1[0].read()
+    filedata = args.file1.read()
     print(filedata[::-1])
     sys.exit(0)
 
@@ -197,18 +195,15 @@ def make_parser():
     parser_extract.add_argument("offset",
         help="(int) extraction offset. use zero for file start. negative values reference from EOF",
         metavar='offset',
-        nargs=1,
         type=int
     )
     parser_extract.add_argument("length",
         help="(int) length of bytes to extract. 0 extracts data from offset to EOF. if negative, returns reversed output (extracts backwards from offset)",
         metavar='length',
-        nargs=1,
         type=int
     )
     parser_extract.add_argument("file1",
         help="primary target input file",
-        nargs=1,
         type=argparse.FileType('r')
     )
     parser_extract.set_defaults(func=func_extract)
@@ -219,7 +214,6 @@ def make_parser():
     )
     parser_find.add_argument("file1",
         help="primary target input file",
-        nargs=1,
         type=argparse.FileType('r')
     )
     parser_find.set_defaults(func=func_find)
@@ -237,7 +231,6 @@ def make_parser():
     )
     parser_hexdump.add_argument("file1",
       help="primary target input file",
-      nargs=1,
       type=argparse.FileType('r')
     )
     parser_hexdump.set_defaults(func=func_hexdump)
@@ -255,7 +248,6 @@ def make_parser():
     )
     parser_info.add_argument("file1",
       help="primary target input file",
-      nargs=1,
       type=argparse.FileType('r')
     )
     parser_info.set_defaults(func=func_info)
@@ -266,7 +258,6 @@ def make_parser():
     )
     parser_output.add_argument("output1",
       help="sequence to output",
-      nargs=1,
       type=str
     )
     parser_output.add_argument("-e", "--encoding",
@@ -284,7 +275,6 @@ def make_parser():
     )
     parser_reverse.add_argument("file1",
       help="primary target input file",
-      nargs=1,
       type=argparse.FileType('r')
     )
     parser_reverse.set_defaults(func=func_reverse)
@@ -295,7 +285,6 @@ def make_parser():
     )
     parser_swap.add_argument("file1",
       help="primary target input file",
-      nargs=1,
       type=argparse.FileType('r')
     )
     parser_swap.set_defaults(func=func_swap)
@@ -318,7 +307,6 @@ def make_parser():
       help="byte sequence to xor with entire input file",
       default=False,
       metavar='byte',
-      nargs=1,
       type=str
     )
     parser_xor.add_argument("-B", "--bytes",
